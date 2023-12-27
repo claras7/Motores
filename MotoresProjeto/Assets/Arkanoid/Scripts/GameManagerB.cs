@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManagerB : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class GameManagerB : MonoBehaviour
     {
         SpawnarNovoJogador();
         AtualizarContador();
+        tijolosRestantes = GameObject.FindGameObjectsWithTag("Tijolo").Length;
 
     }
 
@@ -53,6 +55,49 @@ public class GameManagerB : MonoBehaviour
     }
 
    
+    public void SubtrairTijolo()
+    {
+        tijolosRestantes--;
+
+        if(tijolosRestantes <= 0)
+        {
+            Vitoria();
+        }
+    }
+
+    public void SubtrairVida()
+    {
+        vidas--;
+        AtualizarContador();
+        Destroy(playerAtual.gameObject);
+        Destroy(ballAtual.gameObject);
+        if(vidas <= 0)
+        {
+            GameOver();
+        }
+        else
+        {
+            Invoke(nameof(SpawnarNovoJogador), 2);
+        }
+    }
+
+    public void Vitoria()
+    {
+        msgFinal.text = "Parabéns";
+        Destroy(ballAtual.gameObject);
+        Invoke(nameof(ReiniciarCena), 2);
+    }
+
+    public void GameOver()
+    {
+        msgFinal.text = "Game Over";
+        Invoke(nameof(ReiniciarCena), 2);
+    }
+
+    public void ReiniciarCena()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
     void Update()
     {
         if (segurando)
